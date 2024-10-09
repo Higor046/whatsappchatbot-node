@@ -2,11 +2,14 @@ import { MessageRepositoryInteface } from "../../domain/repository/message-repos
 import AudioServiceInterface from "../../domain/service/audio-service.interface";
 import TranscriptionServiceInterface from "../../domain/service/transcription-service.interface";
 import { MessageDTO } from "./message.dto";  // Your data transfer object
+import { Message } from "../../domain/entities/message";  // Import the Message class
+import SummarizeServiceInterface from "../../domain/service/summarize-service.interface";
 
-export class TranscribeMassageUseCase {
+export class TranscribeMessageUseCase {
     constructor(
         private transcriptionService: TranscriptionServiceInterface,
         private audioService: AudioServiceInterface,
+        private summarizationService: SummarizeServiceInterface,
         private messageRepository: MessageRepositoryInteface,
     ) {}
 
@@ -23,21 +26,25 @@ export class TranscribeMassageUseCase {
             messageData.mediaUrl0
         );
         
-        if(!newMessage.isMediaMessage()){
-            console.log('Messagem não tem midia!')
+        if (!newMessage.isMediaMessage()) {
+            console.log('Message does not contain media!');
             return undefined;
         }
     
-        this.messageRepository.add(newMessage);
+        await this.messageRepository.add(newMessage);  // Ensure async operations
         const mp3Path = await this.audioService.download(newMessage.mediaUrl0);
-        const transcription = await this.transcriptionService.trascribe(mp3Path);
+        const transcription = await this.transcriptionService.trascribe(mp3Path);  // Use 'trascribe' here
+
+        if(transcription.length > 1000){
+            const summarizedTrancription = await this.summarizationService.summarize(transcription);
+            newMessage.setTranscriptionText(summarizedTrancription);
+            this.messageRepository.update(newMessage.smsMessageSid,newMessage);
+            return summarizedTrancription;
+        }
 
         newMessage.setTranscriptionText(transcription);
-        this.messageRepository.update(newMessage.smsMessageSid, newMessage);
+        await this.messageRepository.update(newMessage.smsMessageSid, newMessage);
 
         return transcription;
-
-        
     }
-    
 }

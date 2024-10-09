@@ -1,3 +1,3 @@
 export default interface TranscriptionServiceInterface{
-    trascribe(audioUrl: string): Promise<string>;
+    trascribe(audioPath: string): Promise<string>;
 }

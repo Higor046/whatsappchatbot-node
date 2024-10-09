@@ -5,6 +5,11 @@ import bodyParser from 'body-parser';
 import { sendMessage } from './twilio';
 import './commands';
 import { getCommand } from './commandManager';
+import { AudioService } from './infra/service/audio.service';
+import { MessageMemoryRepository } from './infra/memory/message-memory.repository';
+import { TranscribeMessageUseCase } from './usecase/transcribe-message/trascribe-message.usecase';
+import { SummarizeService } from './infra/service/summarize.service';
+import { TranscriptionService } from './infra/service/transcription.service';
 
 const app = express();
 const port = 3001;
@@ -13,7 +18,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/whatsapp', async (req: Request, res: Response): Promise<void> => {
-    const { To, From, Body } = req.body;
+    const { SmsMessageSid, MediaContentType0, NumMedia, ProfileName, WaId, Body, To, From, MediaUrl0} = req.body;
+
+    if(NumMedia =='1' && MediaContentType0 =='audio/ogg' && MediaUrl0.length !==0){
+        const audioService = new AudioService();
+        const transcriptionService = new TranscriptionService();
+        const summarizeService = new SummarizeService();
+        const messageRepository = new MessageMemoryRepository();
+
+        const transcribeMessageUseCase = new TranscribeMessageUseCase(
+            transcriptionService,
+            audioService,
+            summarizeService,
+            messageRepository,
+        );
+
+        const response = await transcribeMessageUseCase.execute()
+
+    }
 
     if (!To || !From || !Body || typeof Body !== 'string' || Body.trim() === '') {
         res.status(400).send('Parâmetros "to", "from" ou "body" estão ausentes ou inválidos.');
