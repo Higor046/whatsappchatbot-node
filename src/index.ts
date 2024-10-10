@@ -33,7 +33,25 @@ app.post('/whatsapp', async (req: Request, res: Response): Promise<void> => {
             messageRepository,
         );
 
-        const response = await transcribeMessageUseCase.execute()
+        const response = await transcribeMessageUseCase.execute({
+            smsMessageSid: SmsMessageSid,
+            mediaContentType0: MediaContentType0,
+            numMedia: NumMedia,
+            profileName: ProfileName,
+            waId: WaId,
+            body: Body,
+            to: To,
+            from: From,
+            mediaUrl0: MediaUrl0
+        });
+
+        if(!response){
+            sendMessage(To, From, 'Não foi possível trasnscrever a mensagem');
+            return;
+        }
+
+        sendMessage(To, From, response);
+        return;
 
     }
 
@@ -52,7 +70,8 @@ app.post('/whatsapp', async (req: Request, res: Response): Promise<void> => {
             await sendMessage(To, From, response);
         } else {
             console.log(`Comando não reconhecido: ${commandName}`);
-            await sendMessage(To, From, 'Comando não reconhecido. Envie "help" para lista de comandos disponíveis');
+            await sendMessage(To, From, `Olá envie um audio para transcrição 
+                \n ou  Envie "help" para lista de comandos disponíveis`);
         }
 
         res.status(200).send();
