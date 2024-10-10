@@ -14,7 +14,7 @@ export class MessageMemoryRepository{
             throw new Error('Mensagem não encontrada');
         }
 
-        this.messages[messageIndex] = updateMessage
+        this.messages[messageIndex] = updateMessage;
     }
 
 }
