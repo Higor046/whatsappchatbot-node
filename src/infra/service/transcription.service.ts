@@ -8,6 +8,8 @@ interface TranscriptionResponse {
 }
 
 export class TranscriptionService implements TranscriptionServiceInterface {
+    
+    
     private model: string;
     private url: string;
 
