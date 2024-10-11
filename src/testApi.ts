@@ -1,27 +1,20 @@
-import axios, { AxiosError } from 'axios';
+import twilio from 'twilio';
 
 const TWILIO_ACCOUNT_SID = 'ACf78a06be4431c8ae3d8591a0d9b9da24'; // Seu Account SID
 const TWILIO_AUTH_TOKEN = 'ac0556ad39e84d25d7c0e084366b4133'; // Seu Auth Token
-const MESSAGE_SID = 'MM1b20d589d6788c3272c3f186b57beb8f'; // SID da mensagem
-const MEDIA_SID = 'ME8261cf91006c399cb4884bb5861de8d0'; // SID do mídia
+const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
-const getMediaFromTwilio = async () => {
+const sendWhatsAppMessage = async () => {
     try {
-        const response = await axios.get(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages/${MESSAGE_SID}/Media/${MEDIA_SID}`, {
-            auth: {
-                username: TWILIO_ACCOUNT_SID,
-                password: TWILIO_AUTH_TOKEN
-            },
-            responseType: 'arraybuffer', // Para lidar com a mídia binária
+        const message = await client.messages.create({
+            from: 'whatsapp:+14155238886', // Número do WhatsApp do Twilio
+            to: 'whatsapp:+5511947521710', // Seu número de telefone com código de país
+            body: 'Hello, this is a test message from Twilio!'
         });
-        console.log('Mídia recebida com sucesso:', response.data);
-    } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-            console.error('Erro na requisição Axios:', error.response?.status, error.response?.data);
-        } else {
-            console.error('Erro desconhecido:', error);
-        }
+        console.log('Mensagem enviada com sucesso:', message.sid);
+    } catch (error) {
+        console.error('Erro ao enviar a mensagem:', error);
     }
 };
 
-getMediaFromTwilio();
+sendWhatsAppMessage();

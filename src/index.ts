@@ -10,6 +10,7 @@ import { MessageMemoryRepository } from './infra/memory/message-memory.repositor
 import { TranscribeMessageUseCase } from './usecase/transcribe-message/trascribe-message.usecase';
 import { SummarizeService } from './infra/service/summarize.service';
 import { TranscriptionService } from './infra/service/transcription.service';
+import axios from 'axios';
 
 const app = express();
 const port = 3001;

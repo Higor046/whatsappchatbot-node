@@ -9,7 +9,7 @@ import path from "path"; // Corrected import
 import Ffmpeg from "fluent-ffmpeg";
 
 const writeFileAsync = promisify(fs.writeFile);
-// const unlinkAsync = promisify(fs.unlink);
+const unlinkAsync = promisify(fs.unlink);
 
 export class AudioService implements AudioServiceInterface {
     private oggFilePath: string;
@@ -39,7 +39,7 @@ export class AudioService implements AudioServiceInterface {
 
         return new Promise((resolve, reject) => {
             Ffmpeg(this.oggFilePath)
-                .setFfmpegPath(ffmpegPath.path) // Set ffmpeg path if needed
+                .setFfmpegPath(ffmpegPath.path)
                 .output(this.mp3FilePath)
                 .on('end', () => {
                     resolve(this.mp3FilePath);
