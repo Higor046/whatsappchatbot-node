@@ -33,7 +33,7 @@ export class TranscribeMessageUseCase {
     
         await this.messageRepository.add(newMessage);  // Ensure async operations
         const mp3Path = await this.audioService.download(newMessage.mediaUrl0);
-        const transcription = await this.transcriptionService.trascribe(mp3Path);  // Use 'trascribe' here
+        const transcription = await this.transcriptionService.transcribe(mp3Path);  // Use 'trascribe' here
 
         if(transcription.length > 1000){
             const summarizedTrancription = await this.summarizationService.summarize(transcription);

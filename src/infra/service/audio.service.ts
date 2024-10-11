@@ -9,7 +9,7 @@ import path from "path"; // Corrected import
 import Ffmpeg from "fluent-ffmpeg";
 
 const writeFileAsync = promisify(fs.writeFile);
-//const unlinkAsync = promisify(fs.unlink);
+// const unlinkAsync = promisify(fs.unlink);
 
 export class AudioService implements AudioServiceInterface {
     private oggFilePath: string;
@@ -28,8 +28,8 @@ export class AudioService implements AudioServiceInterface {
     }
 
     async download(url: string): Promise<string> {
-        const response = await axios.get(url, { responseType: 'arraybuffer' });
-        const audioBuffer = Buffer.from(response.data);
+        const response = await axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' }); // Especifica ArrayBuffer como tipo de resposta
+        const audioBuffer = Buffer.from(response.data); // Agora response.data é corretamente tipado como ArrayBuffer
         await writeFileAsync(this.oggFilePath, audioBuffer);
         this.audioLoaded = true;
 

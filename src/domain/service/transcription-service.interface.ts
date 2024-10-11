@@ -1,3 +1,4 @@
-export default interface TranscriptionServiceInterface{
-    trascribe(audioPath: string): Promise<string>;
+// transcription-service.interface.ts
+export default interface TranscriptionServiceInterface {
+    transcribe(audioPath: string): Promise<string>;
 }
