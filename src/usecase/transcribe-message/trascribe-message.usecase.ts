@@ -35,7 +35,7 @@ export class TranscribeMessageUseCase {
         const mp3Path = await this.audioService.download(newMessage.mediaUrl0);
         const transcription = await this.transcriptionService.transcribe(mp3Path);  // Use 'trascribe' here
 
-        if(transcription.length > 1000){
+        if(transcription.length > 500){
             const summarizedTrancription = await this.summarizationService.summarize(transcription);
             newMessage.setTranscriptionText(summarizedTrancription);
             this.messageRepository.update(newMessage.smsMessageSid,newMessage);
