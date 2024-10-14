@@ -3,8 +3,6 @@ dotenv.config();
 import { Twilio } from 'twilio';
 
 // Load environment variables from .env file
-
-
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 
@@ -12,6 +10,10 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 if (!accountSid || !authToken) {
     throw new Error('TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN must be defined');
 }
+
+// Log the account SID and auth token (for debugging purposes)
+console.log('Account SID:', accountSid);
+console.log('Auth Token:', authToken);
 
 // Initialize Twilio client
 const client = new Twilio(accountSid, authToken);
@@ -26,12 +28,7 @@ export const sendMessage = async (from: string, to: string, body: string) => {
         });
         console.log('Message sent:', message.sid);
     } catch (error) {
-        // Type guard to ensure error is an instance of Error
-        if (error instanceof Error) {
-            console.error('Error sending message:', error.message);
-        } else {
-            console.error('Unknown error sending message:', error);
-        }
+        console.error('Error sending message:', error);
         throw error; // Rethrow the error to handle it in the route
     }
 };
