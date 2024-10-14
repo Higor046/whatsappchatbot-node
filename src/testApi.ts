@@ -1,7 +1,21 @@
+import dotenv from 'dotenv';
 import twilio from 'twilio';
 
-const TWILIO_ACCOUNT_SID = 'ACf78a06be4431c8ae3d8591a0d9b9da24'; // Seu Account SID
-const TWILIO_AUTH_TOKEN = 'ac0556ad39e84d25d7c0e084366b4133'; // Seu Auth Token
+// Carrega as variáveis de ambiente do arquivo .env
+dotenv.config();
+
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID; // Seu Account SID do Twilio
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;   // Seu Auth Token do Twilio
+
+// Verifica se as variáveis de ambiente foram carregadas corretamente
+if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
+    console.error('Erro: As variáveis TWILIO_ACCOUNT_SID e TWILIO_AUTH_TOKEN não foram encontradas.');
+    process.exit(1); // Encerra o processo caso as variáveis não estejam definidas
+} else{
+    console.log('Sid:',TWILIO_ACCOUNT_SID);
+    console.log('Auth:',TWILIO_AUTH_TOKEN);
+}
+
 const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 const sendWhatsAppMessage = async () => {
